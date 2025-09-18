@@ -5,6 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "dotenv>=0.9.9",
+    "openai>=1.108.0",
     "pandas>=2.3.2",
+    "pydantic>=2.11.9",
     "streamlit>=1.49.1",
 ]
