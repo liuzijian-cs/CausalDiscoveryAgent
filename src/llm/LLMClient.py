@@ -1,4 +1,4 @@
-# src/agent/LLMClient.py
+# src/llm/LLMClient.py
 # 作者: LiuZijian(liuzj109@163.com & liuzijian-cs@shu.edu.cn)
 # 时间: 2025-09-18 20:20
 # 引用: https://github.com/Lancelot39/Causal-Copilot
@@ -67,6 +67,12 @@ class LLMClient(object):
             base_url (Optional[str]): API端点，如果未提供则从环境变量LLM_API_URL获取 (API endpoint, gets from LLM_API_URL if not provided)
         """
         self.logger = logging.getLogger(__name__)
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=logging.INFO,
+                format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
 
         # 验证提供商类型 (Validate provider type)
         assert provider in ["default"], "目前仅支持'default'提供商 (Currently only 'default' provider is supported)"

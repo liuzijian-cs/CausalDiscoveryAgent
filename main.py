@@ -5,6 +5,8 @@
 
 import os
 import logging
+import argparse
+
 from dotenv import load_dotenv
 
 # Environment variables
@@ -18,13 +20,16 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-# def default_arguments():
-    
+def default_arguments():
+    parser = argparse.ArgumentParser(description='Causal Discovery Agent.')
+    parser.add_argument('--data', type=str, default="demo/data/data.csv",
+                        help='Path to the input dataset file (e.g., CSV format or Excel file)')
+    return parser.parse_args()
 
 
 
 def main():
-    
+
 
 
     log.info("Hello from causaldiscoveryagent!")
