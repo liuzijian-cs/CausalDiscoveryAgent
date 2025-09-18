@@ -11,8 +11,9 @@ from datetime import datetime
 import torch
 import pandas as pd
 
-from ..llm import LLMClient
 from .state import GlobalState
+from ..llm import LLMClient
+from ..utils import data_preprocess
 
 class Initializer(object):
     """状态初始化器 (State Initializer)"""
@@ -84,6 +85,48 @@ class Initializer(object):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_base = Path(f'output/{self.data_path}/{timestamp}')
         self.state.user_data.output_dir = str(output_base)
+
+
+    def _data_stat(self):
+        """计算数据统计信息 (Compute data statistics)"""
+        self.logger.info("计算数据统计信息 (Computing data statistics)...")
+        df = self.state.user_data.raw_data
+        if df is None:
+            raise ValueError("原始数据未加载 (Raw data not loaded)")
+        n, m = df.shape
+        self.state.statistics.sample_size = n
+        self.state.statistics.feature_number = m
+
+        each_type, dataset_type, df = data_preprocess(df)
+        self.state.statistics.data_type = dataset_type["Data Type"]
+        self.state.statistics.data_type_column = str(each_type)
+        self.logger.info(f"Data preprocessing completed, data type identified: {dataset_type['Data Type']}")
+
+
+
+
+
+        df = self.state.user_data.raw_data
+        if df is None:
+            raise ValueError("原始数据未加载 (Raw data not loaded)")
+        
+        stats = self.state.statistics
+        stats.sample_size = df.shape[0]
+        stats.feature_number = df.shape[1]
+        stats.miss_ratio = [{"feature": col, "missing_ratio": df[col].isnull().mean()} for col in df.columns]
+        stats.sparsity = df.isnull().sum().sum() / (df.shape[0] * df.shape[1])
+        
+        # 其他统计信息计算 (Other statistics computations)
+        # 线性假设 (Linearity assumption)
+        stats.linearity = all(pd.api.types.is_numeric_dtype(df[col]) for col in df.columns)
+        # 高斯误差假设 (Gaussian error assumption)
+        stats.gaussian_error = False  # 需要进一步的统计测试 (Requires further statistical tests)
+        # 异质性假设 (Heterogeneity assumption)
+        stats.heterogeneous = False  # 需要领域知识 (Requires domain knowledge)
+        # 域索引 (Domain index)
+        stats.domain_index = None  # 需要用户提供 (Requires user input)
+        
+        self.logger.info("数据统计信息计算完成 (Data statistics computed)")
 
 if __name__ == "__main__":
     initializer = Initializer(data_path="demo/data/data.csv")

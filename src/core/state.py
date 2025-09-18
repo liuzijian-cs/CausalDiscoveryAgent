@@ -40,6 +40,8 @@ class Statistics(BaseModel):
     feature_number: Optional[int] = None
     miss_ratio: List[Dict] = Field(default_factory=list)
     sparsity: Optional[float] = None
+    data_type: Optional[str] = None
+    data_type_column: Optional[str] = None
     
     # 假设条件 (Assumptions)
     linearity: Optional[bool] = None
