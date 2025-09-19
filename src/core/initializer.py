@@ -12,7 +12,7 @@ import torch
 import pandas as pd
 
 from .state import GlobalState
-from ..llm import LLMClient
+from ..llm import LLMClient, agents
 from ..utils import data_preprocess
 
 class Initializer(object):
@@ -41,8 +41,21 @@ class Initializer(object):
         self.client = self._load_llm_client()
         self._load_data()
         self._setup_output_paths()
+        self.state.user_data.data_name = os.path.splitext(os.path.basename(data_path))[0]
         self.state.algorithm.gpu_available = torch.cuda.is_available()
         self.state.user_data.accept_cpdag = accept_CPDAG
+
+        # TODO: 数据预处理&清洗能力不足，例如文本类型输入时难以直接处理，目前是强制采用了filter
+        # TODO：self.state.user_data.selected_features
+        # TODO: self.state.user_data.visual_selected_features
+        # TODO: self.state.user_data.selected_algorithm
+
+        self._data_stat()
+        agents.knowledge_info(self.state)
+    
+    def get_state(self):
+        return self.state
+
     
     def _load_algorithms(self):
         """加载可用算法 (Load available algorithms)"""
@@ -96,37 +109,18 @@ class Initializer(object):
         n, m = df.shape
         self.state.statistics.sample_size = n
         self.state.statistics.feature_number = m
-
+        
+        # 数据预处理 (Data preprocessing) 
         each_type, dataset_type, df = data_preprocess(df)
         self.state.statistics.data_type = dataset_type["Data Type"]
         self.state.statistics.data_type_column = str(each_type)
-        self.logger.info(f"Data preprocessing completed, data type identified: {dataset_type['Data Type']}")
+        self.state.user_data.processed_data = df
+        self.logger.info(f"Data preprocessing completed, data type identified: {dataset_type['Data Type']}, shape: ({m},{n}) -> ({df.shape[1]},{df.shape[0]})")
 
-
-
-
-
-        df = self.state.user_data.raw_data
-        if df is None:
-            raise ValueError("原始数据未加载 (Raw data not loaded)")
         
-        stats = self.state.statistics
-        stats.sample_size = df.shape[0]
-        stats.feature_number = df.shape[1]
-        stats.miss_ratio = [{"feature": col, "missing_ratio": df[col].isnull().mean()} for col in df.columns]
-        stats.sparsity = df.isnull().sum().sum() / (df.shape[0] * df.shape[1])
-        
-        # 其他统计信息计算 (Other statistics computations)
-        # 线性假设 (Linearity assumption)
-        stats.linearity = all(pd.api.types.is_numeric_dtype(df[col]) for col in df.columns)
-        # 高斯误差假设 (Gaussian error assumption)
-        stats.gaussian_error = False  # 需要进一步的统计测试 (Requires further statistical tests)
-        # 异质性假设 (Heterogeneity assumption)
-        stats.heterogeneous = False  # 需要领域知识 (Requires domain knowledge)
-        # 域索引 (Domain index)
-        stats.domain_index = None  # 需要用户提供 (Requires user input)
-        
-        self.logger.info("数据统计信息计算完成 (Data statistics computed)")
+        # Check assumption for continuous data
+        # --- IGNORE ---
+
 
 if __name__ == "__main__":
     initializer = Initializer(data_path="demo/data/data.csv")

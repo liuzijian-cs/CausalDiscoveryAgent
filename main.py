@@ -11,6 +11,8 @@ import argparse
 
 from dotenv import load_dotenv
 
+from src.core import Initializer
+
 # Environment variables
 load_dotenv()
 
@@ -31,6 +33,9 @@ def default_arguments():
 
 
 def main():
+    initializer = Initializer(data_path="demo/data/data.csv")
+    state = initializer.get_state()
+    print(state)
 
 
 

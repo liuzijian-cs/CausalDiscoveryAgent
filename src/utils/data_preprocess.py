@@ -6,13 +6,14 @@
 import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer
+from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.preprocessing import StandardScaler
 
 def data_preprocess(df: pd.DataFrame):
     """预处理数据 (Preprocess data)
     column_type：dict[str, str]，每列名 → "Continuous" 或 "Category"
-    overall_type：dict，形如 {"Data Type": "Continuous" | "Category" | "Mixture" | "Time-series"}
+    overall_type：dict，形如 {"Data Type": "Continuous" | "Category" | "Mixture"}
     """
     # Data Type Classification
     column_type = {}
@@ -63,6 +64,9 @@ def data_preprocess(df: pd.DataFrame):
     # Imputation for categorical data
     for column in categorical_features:
         df[column] = imputer_cat.fit_transform(df[[column]]).ravel()
+
+    # Feature selection
+    df = df.select_dtypes(include=['float64', 'int64'])
 
     # Z-score normalization
     scaler = StandardScaler()

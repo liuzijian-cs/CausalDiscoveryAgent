@@ -53,7 +53,7 @@ class PydanticHandler:
 class LLMClient(object):
     def __init__(self, 
                  provider: str = "default",
-                 model: str = "gpt-4o-mini",
+                 model: str = "gpt-5",
                  api_key: Optional[str] = None,
                  base_url: Optional[str] = None
                  ):
@@ -77,7 +77,6 @@ class LLMClient(object):
         # 验证提供商类型 (Validate provider type)
         assert provider in ["default"], "目前仅支持'default'提供商 (Currently only 'default' provider is supported)"
         self.provider = provider
-        self.model = model
     
         # 从环境变量或参数获取API密钥 (Get API key from environment variable or parameter)
         if api_key is None:
@@ -90,6 +89,10 @@ class LLMClient(object):
             base_url = os.getenv("LLM_API_URL", "https://api.openai.com/v1")
         assert base_url is not None, "必须通过参数或LLM_API_URL环境变量提供API端点 (API endpoint must be provided via parameter or LLM_API_URL environment variable)"
         self.base_url = base_url
+
+        if model is None:
+            model = os.getenv("LLM_MODEL", "gpt-5")
+        self.model = model
         
         # 初始化OpenAI客户端 (Initialize OpenAI client)
         self.client = OpenAI(

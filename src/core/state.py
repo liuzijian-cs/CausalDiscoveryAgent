@@ -15,6 +15,7 @@ class UserData(BaseModel):
     """用户数据状态 (User Data State)"""
     model_config = {"arbitrary_types_allowed": True}
     
+    data_name: Optional[str] = None
     raw_data: Optional[pd.DataFrame] = None
     processed_data: Optional[pd.DataFrame] = None
     ground_truth: Optional[np.ndarray] = None
@@ -44,10 +45,10 @@ class Statistics(BaseModel):
     data_type_column: Optional[str] = None
     
     # 假设条件 (Assumptions)
-    linearity: Optional[bool] = None
-    gaussian_error: Optional[bool] = None
+    # linearity: Optional[bool] = None
+    # gaussian_error: Optional[bool] = None
     heterogeneous: Optional[bool] = None
-    domain_index: Optional[str] = None
+    # domain_index: Optional[str] = None
     
     # 测试参数 (Test Parameters)
     alpha: float = 0.1
