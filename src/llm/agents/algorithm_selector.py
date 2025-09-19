@@ -1,4 +1,4 @@
-# src/core/initializer.py
+# src/llm/agents/algorithm_selector.py
 # 作者: LiuZijian(liuzj109@163.com & liuzijian-cs@shu.edu.cn)
 # 时间: 2025-09-19 13:30
 # 描述: 自动化代码选择器 (Automated Code Selector)

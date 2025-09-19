@@ -1,4 +1,4 @@
-# src/core/initializer.py
+# src/llm/agents/knowledge_info.py
 # 作者: LiuZijian(liuzj109@163.com & liuzijian-cs@shu.edu.cn)
 # 时间: 2025-09-18 21:00
 # 引用: https://github.com/Lancelot39/Causal-Copilot

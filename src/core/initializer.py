@@ -63,6 +63,9 @@ class Initializer(object):
     def get_state(self):
         return self.state
 
+    def get_available_alorithms(self):
+        return self._load_algorithms()
+
     
     def _load_algorithms(self):
         """加载可用算法 (Load available algorithms)"""

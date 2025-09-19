@@ -69,7 +69,7 @@ class Algorithm(BaseModel):
     algorithm_arguments: Dict[str, Any] = Field(default_factory=dict)
     algorithm_arguments_json: Optional[object] = None
     waiting_minutes: float = 1440.0
-    handle_correlated_features: Optional[bool] = True
+    handle_correlated_features: Optional[bool] = True # 自动处理高相关特征，后续加入
     correlation_threshold: float = 0.99
     gpu_available: bool = False
 
@@ -96,6 +96,12 @@ class Results(BaseModel):
     prior_knowledge: Optional[object] = None
     refutation_analysis: Optional[object] = None
     report_selected_index: Optional[object] = None
+
+# background_knowledge = {
+#     "forbidden_edges": [["A", "B"], ["C", "D"]],
+#     "required_edges": [["E", "F"]],
+#     "tiers": {"A": 1, "B": 2}
+# }
 
 class Inference(BaseModel):
     """推理状态 (Inference State)"""
