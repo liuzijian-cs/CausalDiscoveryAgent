@@ -49,6 +49,9 @@ class Statistics(BaseModel):
     # gaussian_error: Optional[bool] = None
     heterogeneous: Optional[bool] = None
     # domain_index: Optional[str] = None
+
+    # Text：
+    description: Optional[str] = None
     
     # 测试参数 (Test Parameters)
     alpha: float = 0.1

@@ -35,7 +35,9 @@ def default_arguments():
 def main():
     initializer = Initializer(data_path="demo/data/data.csv")
     state = initializer.get_state()
-    print(state)
+
+    # print(state)
+    print(state.algorithm.algorithm_candidates)
 
 
 

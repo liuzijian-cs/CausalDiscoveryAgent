@@ -50,8 +50,15 @@ class Initializer(object):
         # TODO: self.state.user_data.visual_selected_features
         # TODO: self.state.user_data.selected_algorithm
 
-        self._data_stat()
+        self._data_process()
         agents.knowledge_info(self.state)
+
+        # Exploratory Data Analysis
+        # --- IGNORE ---
+
+        # Algorithm Selection
+        agents.algorithm_selector(self.state)
+
     
     def get_state(self):
         return self.state
@@ -100,15 +107,15 @@ class Initializer(object):
         self.state.user_data.output_dir = str(output_base)
 
 
-    def _data_stat(self):
+    def _data_process(self):
         """计算数据统计信息 (Compute data statistics)"""
         self.logger.info("计算数据统计信息 (Computing data statistics)...")
         df = self.state.user_data.raw_data
         if df is None:
             raise ValueError("原始数据未加载 (Raw data not loaded)")
         n, m = df.shape
-        self.state.statistics.sample_size = n
-        self.state.statistics.feature_number = m
+        # self.state.statistics.sample_size = n
+        # self.state.statistics.feature_number = m
         
         # 数据预处理 (Data preprocessing) 
         each_type, dataset_type, df = data_preprocess(df)
@@ -117,9 +124,21 @@ class Initializer(object):
         self.state.user_data.processed_data = df
         self.logger.info(f"Data preprocessing completed, data type identified: {dataset_type['Data Type']}, shape: ({m},{n}) -> ({df.shape[1]},{df.shape[0]})")
 
+        n, m = df.shape
+        self.state.statistics.sample_size = n
+        self.state.statistics.feature_number = m
         
         # Check assumption for continuous data
         # --- IGNORE ---
+
+        # Convert to natural language
+        self.state.statistics.description = f"""
+            The dataset has the following characteristics:\n\n
+            Data Type: The overall data type is {self.state.statistics.data_type}.\n\n
+            The sample size is {self.state.statistics.sample_size} with {self.state.statistics.feature_number} features. \n\n
+            Data Quality: There are no missing values in the dataset.\n\n
+            """
+        
 
 
 if __name__ == "__main__":
